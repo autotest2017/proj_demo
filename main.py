@@ -2,34 +2,30 @@
 # -*- coding: utf-8 -*-
 # coder: samren
 # version : 1.0
+import time
 import logging
 import unittest
 from lib.Logger import Logger
-from testcase.login_test_module import UTExample1
+from lib.HTMLTestRunner import HTMLTestRunner
+from testcase.admin_login_logout.admin_login_correction import AdminLoginCorrection
+from testcase.admin_login_logout.admin_login_failure import AdminLoginFail
 
-#logger = logging.getLogger("test")
-#
-#logger.setLevel(logging.DEBUG)#  这里有问题，没有设置成功日志级别。
-#
-#logging.error("this is an error message")
-#logging.warn("warn message")
-#logging.info("this is a info message")
-#logging.debug("this is a debug message")
-#
-#FORMAT = "%(asctime)-15s %(clientip)s %(user)-8s %(message)s"
-#logging.basicConfig(format=FORMAT)
-#
-#d = {'clientip': '192.168.0.1', 'user': 'fbloggs'}
-#logging.warning("Protocol problem: %s", "connection reset", extra=d)
-
+def suite():
+    suite = unittest.TestSuite()
+    loader = unittest.TestLoader()
+    suite.addTests(loader.loadTestsFromTestCase(AdminLoginCorrection))
+    suite.addTests(loader.loadTestsFromTestCase(AdminLoginFail))
+    return suite
 
 if __name__ == "__main__":
-	logger = Logger().getlog()
-	logger.info('start testcase...')
-	
-	suite = unittest.TestSuite()
-	loader = unittest.TestLoader()
-	suite.addTests(loader.loadTestsFromTestCase(UTExample1))
-	unittest.TextTestRunner(verbosity=2).run(suite)
-	
-	logger.info('stop testcase...')
+    logger = Logger().getlog()
+    logger.info('start testcase...')
+
+    fp = open('./result/test_result_%s.html' % time.strftime("%Y-%m-%d %H-%M-%S"), 'wb')
+    runner = HTMLTestRunner(stream=fp,
+                            title=u'测试报告生成范例',
+                            description=u"测试用例执行情况：")
+    runner.run(suite())
+    fp.close()
+
+    logger.info('stop testcase...')
