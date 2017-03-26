@@ -33,5 +33,6 @@ if __name__ == "__main__":
                             description=u"测试用例执行情况：")
     runner.run(suite())
     fp.close()
+    #send_email(dict, mode='html')
     send_email(FROM_ADDR, FROM_PSWD, TO_ADDR, u"冒烟测试报告", report_path)
     logger.info('stop testcase...')
